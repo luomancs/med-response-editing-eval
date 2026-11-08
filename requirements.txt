@@ -1,0 +1,5 @@
+torch>=2.1
+transformers>=4.51   # Qwen3 support
+accelerate>=0.26     # device_map="auto"
+pandas>=1.5
+tqdm

@@ -1,0 +1,16 @@
+[
+  {
+    "patient_question": "I had my knee surgery two weeks ago and the swelling is still there, especially in the evening. Is this normal or should I be worried? When will it go down?",
+    "response_1": "I understand how frustrating it can be to still see swelling two weeks after surgery, and it's completely reasonable to check in. Some swelling, especially later in the day, is common at this stage and usually improves gradually over several weeks. Keep elevating your leg and icing it. If you notice increasing pain, redness, warmth, or fever, please call us right away so we can take a look.",
+    "response_2": "Swelling at two weeks is expected. Elevate and ice. Call if fever or redness.",
+    "choice": "Response 1",
+    "reason": "It acknowledges the patient's frustration and concern, explains what to expect, and offers clear reassurance and next steps."
+  },
+  {
+    "patient_question": "Great news, my follow-up blood work came back normal! Do I still need to come in for the appointment next month, or can we push it back?",
+    "response_1": "Thanks for the update. Your results are normal, so we can move your appointment out by three months. Please call the scheduling office to change it.",
+    "response_2": "That's wonderful news, and I'm so glad to hear your blood work came back normal! Given these results, it's reasonable to push your appointment back by about three months. Please call our scheduling office whenever it's convenient for you, and don't hesitate to reach out if anything changes in the meantime.",
+    "choice": "Response 2",
+    "reason": "It shares in the patient's good news, conveys warmth, and invites the patient to reach out, while giving the same plan."
+  }
+]
