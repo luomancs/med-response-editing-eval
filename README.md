@@ -42,8 +42,8 @@ format, described below.
 Requires Python 3.9+ and, for 7–8B models, a GPU with about 16 GB of memory.
 
 ```bash
-git clone <this-repo>
-cd <this-repo>
+git clone https://github.com/luomancs/med-response-editing-eval.git
+cd med-response-editing-eval
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
