@@ -121,8 +121,8 @@ python -m unittest discover -s tests -v
 ```
 
 These tests require `numpy`, `pandas`, and `tqdm`. They use controlled model
-responses and do not download models or require a GPU. A real-model smoke test
-is still needed to assess model output quality.
+responses and do not download models or require a GPU. The smoke test above
+checks that the pipeline runs end to end and produces the expected output files.
 
 The entailment checker requires a JSON prediction with an integer value of `0`
 or `1`. Invalid output raises an error instead of being included in the scores.
