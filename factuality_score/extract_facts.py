@@ -3,7 +3,7 @@
 
 Input : CSV with patient_question, physician_response, and an edited-response
         column (produced by empathy_score/generate_responses.py).
-Output: the same CSV with two new columns holding pipe-delimited fact lists.
+Output: the same CSV with two new columns holding double-slash-delimited fact lists.
 
 Examples
 --------
@@ -16,16 +16,16 @@ python extract_facts.py \
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
 import pandas as pd
 from tqdm.auto import tqdm
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "empathy_score"))
-from llm_utils import generate, load_model
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from prompts import SYSTEM_MEDICAL_EXPERT, get_decomposition_prompt
+from factuality_score.prompts import SYSTEM_MEDICAL_EXPERT, get_decomposition_prompt
 
 
 def parse_factehr_facts(text: str) -> list[str]:
@@ -37,7 +37,7 @@ def parse_factehr_facts(text: str) -> list[str]:
     parts = text.split("//") if "//" in text else text.split("\n")
     facts = []
     for p in parts:
-        p = p.strip().lstrip("0123456789.)-– ").strip()
+        p = re.sub(r"^(?:\d+[.)]\s+|[-–•]\s+)", "", p.strip()).strip()
         if p and not p.startswith("Note:") and not p.startswith("Facts:"):
             facts.append(p)
     return facts
@@ -64,6 +64,8 @@ def parse_medscore_facts(text: str) -> list[str]:
 
 def extract(model, tokenizer, text: str, method: str, context: str = None,
             max_new_tokens: int = 512) -> list[str]:
+    from empathy_score.llm_utils import generate
+
     prompt = get_decomposition_prompt(text, method=method, context=context)
     prompt = f"{SYSTEM_MEDICAL_EXPERT}\n\n{prompt}"
     raw = generate(model, tokenizer, prompt, max_new_tokens=max_new_tokens)
@@ -94,7 +96,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    import torch; torch.manual_seed(args.seed)
+    import torch
+    from empathy_score.llm_utils import load_model
+
+    torch.manual_seed(args.seed)
 
     data = pd.read_csv(args.data_path)
     needed = [args.question_column, args.physician_column, args.edited_column]

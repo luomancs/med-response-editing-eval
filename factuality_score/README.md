@@ -111,3 +111,18 @@ Select with `--method` on `extract_facts.py`.
 file         n_pairs  macro_recall  macro_precision  macro_f1  micro_recall  micro_precision  micro_f1
 entailment.json    5        0.9200           0.8400    0.8711        0.9333           0.8571    0.8936
 ```
+
+## Validation
+
+Run the regression tests from the repository root:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+These tests require `numpy`, `pandas`, and `tqdm`. They use controlled model
+responses and do not download models or require a GPU. A real-model smoke test
+is still needed to assess model output quality.
+
+The entailment checker requires a JSON prediction with an integer value of `0`
+or `1`. Invalid output raises an error instead of being included in the scores.

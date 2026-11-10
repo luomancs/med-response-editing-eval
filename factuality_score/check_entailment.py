@@ -25,21 +25,23 @@ import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "empathy_score"))
-from llm_utils import extract_json, generate, load_model
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from prompts import SYSTEM_FACT_CHECKER, get_entailment_prompt
+from factuality_score.prompts import SYSTEM_FACT_CHECKER, get_entailment_prompt
 
 
 def check(model, tokenizer, premise: str, hypothesis: str,
           max_new_tokens: int = 64) -> bool:
     """Return True if *premise* entails *hypothesis*."""
+    from empathy_score.llm_utils import extract_json, generate
+
     prompt = f"{SYSTEM_FACT_CHECKER}\n\n{get_entailment_prompt(premise, hypothesis)}"
     raw = generate(model, tokenizer, prompt, max_new_tokens=max_new_tokens)
     parsed = extract_json(raw, "entailment_prediction")
-    if parsed is not None:
-        return parsed.get("entailment_prediction", 0) == 1
-    return "1" in raw
+    prediction = parsed.get("entailment_prediction") if parsed is not None else None
+    if type(prediction) is not int or prediction not in (0, 1):
+        raise ValueError(f"Invalid entailment prediction; expected JSON with a 0 or 1: {raw!r}")
+    return prediction == 1
 
 
 def split_facts(cell: str) -> list[str]:
@@ -70,7 +72,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    import torch; torch.manual_seed(args.seed)
+    import torch
+    from empathy_score.llm_utils import load_model
+
+    torch.manual_seed(args.seed)
 
     data = pd.read_csv(args.data_path)
     for col in ["original_facts", "edited_facts", args.physician_column, args.edited_column]:

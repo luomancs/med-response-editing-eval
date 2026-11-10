@@ -112,9 +112,7 @@ def get_decomposition_prompt(text: str, method: str = "factehr_medical",
                              context: str = None) -> str:
     """Return the filled-in decomposition prompt for *method*."""
     template = DECOMPOSITION_METHODS[method]
-    if "{context}" in template and context:
-        return template.format(text=text, context=context)
-    return template.format(text=text)
+    return template.format(text=text, context=context or "")
 
 
 def get_entailment_prompt(premise: str, hypothesis: str) -> str:
